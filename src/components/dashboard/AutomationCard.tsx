@@ -12,6 +12,7 @@ interface AutomationCardProps {
   lastRun?: string;
   className?: string;
   onClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 const AutomationCard: React.FC<AutomationCardProps> = ({
@@ -21,7 +22,8 @@ const AutomationCard: React.FC<AutomationCardProps> = ({
   status,
   lastRun,
   className,
-  onClick
+  onClick,
+  style
 }) => {
   const statusColors = {
     active: "bg-green-50 text-green-700 border-green-200",
@@ -42,6 +44,7 @@ const AutomationCard: React.FC<AutomationCardProps> = ({
         className
       )}
       onClick={onClick}
+      style={style}
     >
       <CardHeader className="p-5 bg-gradient-to-br from-white to-gray-50">
         <div className="flex items-center justify-between">

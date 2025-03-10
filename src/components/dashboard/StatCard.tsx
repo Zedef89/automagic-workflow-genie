@@ -12,6 +12,7 @@ interface StatCardProps {
   };
   icon: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const StatCard: React.FC<StatCardProps> = ({
@@ -19,10 +20,11 @@ const StatCard: React.FC<StatCardProps> = ({
   value,
   change,
   icon,
-  className
+  className,
+  style
 }) => {
   return (
-    <Card className={cn("border border-gray-100 shadow-sm", className)}>
+    <Card className={cn("border border-gray-100 shadow-sm", className)} style={style}>
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
           <div>
