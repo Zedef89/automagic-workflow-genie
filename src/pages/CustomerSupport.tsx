@@ -23,7 +23,6 @@ const CustomerSupport = () => {
   });
   const [newMessage, setNewMessage] = useState('');
 
-  // Mock data
   const conversations = [
     {
       id: 1,
@@ -134,7 +133,6 @@ const CustomerSupport = () => {
     
     if (!newMessage.trim()) return;
     
-    // Demo: Would normally send to backend/API
     toast({
       title: "Message Sent",
       description: "Your message has been sent.",
@@ -144,7 +142,6 @@ const CustomerSupport = () => {
   };
 
   const handleConfigureAI = () => {
-    // This function would normally open a more detailed configuration modal
     toast({
       title: "AI Configured",
       description: "AI settings have been updated successfully.",
@@ -241,7 +238,6 @@ const CustomerSupport = () => {
           </div>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
           {stats.map((stat, index) => (
             <StatCard
@@ -265,7 +261,6 @@ const CustomerSupport = () => {
           
           <TabsContent value="chat">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Conversations List */}
               <Card className="md:col-span-1 border-gray-100">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
@@ -309,7 +304,6 @@ const CustomerSupport = () => {
                 </CardContent>
               </Card>
               
-              {/* Chat Window */}
               <Card className="md:col-span-2 border-gray-100 flex flex-col h-[600px]">
                 <CardHeader className="border-b border-gray-100 flex-shrink-0">
                   <div className="flex items-center gap-3">
@@ -396,9 +390,19 @@ const CustomerSupport = () => {
                             <td className="py-3 px-4">{conversation.customer}</td>
                             <td className="py-3 px-4">{conversation.topic}</td>
                             <td className="py-3 px-4">
-                              <Badge variant={conversation.status === 'resolved' ? 'success' : 'warning'}>
-                                {conversation.status}
-                              </Badge>
+                              <div className="flex items-center gap-1">
+                                {conversation.status === 'resolved' ? (
+                                  <Badge variant="secondary" className="bg-green-100 text-green-800 flex items-center gap-1">
+                                    <CheckCircle2 className="h-3 w-3" />
+                                    resolved
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="outline" className="bg-amber-100 text-amber-800 flex items-center gap-1">
+                                    <AlertCircle className="h-3 w-3" />
+                                    escalated
+                                  </Badge>
+                                )}
+                              </div>
                             </td>
                             <td className="py-3 px-4">{conversation.startDate}</td>
                             <td className="py-3 px-4">{conversation.messages}</td>
@@ -538,7 +542,6 @@ const CustomerSupport = () => {
   );
 };
 
-// Fixed: Need to define Search component
 const Search = MessageSquare;
 
 export default CustomerSupport;
