@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { MessageSquare, User, Bot, PlusCircle, Settings, RefreshCw, SendHorizontal, Calendar, Filter, Bookmark, Star, CheckCircle2, History } from 'lucide-react';
+import { MessageSquare, User, Bot, PlusCircle, Settings, RefreshCw, SendHorizontal, Calendar, Filter, Bookmark, Star, CheckCircle2, History, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AnimatedRoute from '@/components/ui/AnimatedRoute';
@@ -541,30 +540,5 @@ const CustomerSupport = () => {
 
 // Fixed: Need to define Search component
 const Search = MessageSquare;
-
-// Add Badge component for success and warning variants
-const Badge = ({ children, variant, ...props }: { children: React.ReactNode, variant?: string, [key: string]: any }) => {
-  const getVariantClass = () => {
-    switch (variant) {
-      case 'success':
-        return 'bg-green-100 text-green-800';
-      case 'warning':
-        return 'bg-amber-100 text-amber-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  return (
-    <span 
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getVariantClass()}`}
-      {...props}
-    >
-      {variant === 'success' && <CheckCircle2 className="mr-1 h-3 w-3" />}
-      {variant === 'warning' && <AlertCircle className="mr-1 h-3 w-3" />}
-      {children}
-    </span>
-  );
-};
 
 export default CustomerSupport;
