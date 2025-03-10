@@ -1,14 +1,16 @@
 
-import React from 'react';
-import { Shield, Bell, Database, UserCog, Globe, LifeBuoy, KeyRound, FileJson } from 'lucide-react';
+import React, { useState } from 'react';
+import { Shield, Bell, Database, UserCog, Globe, LifeBuoy, KeyRound, FileJson, Toggle, Power } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AnimatedRoute from '@/components/ui/AnimatedRoute';
+import { useToast } from '@/hooks/use-toast';
 
 const Settings = () => {
-  const settingCategories = [
+  const { toast } = useToast();
+  const [settingCategories, setSettingCategories] = useState([
     {
       id: 'account',
       name: 'Account Settings',
@@ -39,7 +41,34 @@ const Settings = () => {
         { id: 'data-privacy', name: 'Data Privacy', description: 'Control how your data is stored and used', enabled: true }
       ]
     }
-  ];
+  ]);
+
+  const toggleSetting = (categoryId: string, itemId: string) => {
+    setSettingCategories(categories => 
+      categories.map(category => 
+        category.id === categoryId 
+          ? {
+              ...category,
+              items: category.items.map(item => 
+                item.id === itemId 
+                  ? { ...item, enabled: !item.enabled }
+                  : item
+              )
+            }
+          : category
+      )
+    );
+
+    const category = settingCategories.find(c => c.id === categoryId);
+    const item = category?.items.find(i => i.id === itemId);
+
+    if (item) {
+      toast({
+        title: item.enabled ? "Feature Disabled" : "Feature Enabled",
+        description: `${item.name} has been ${item.enabled ? 'disabled' : 'enabled'}.`,
+      });
+    }
+  };
 
   return (
     <AnimatedRoute>
@@ -73,10 +102,21 @@ const Settings = () => {
                         <CardTitle className="text-xl font-semibold">{item.name}</CardTitle>
                         <CardDescription>{item.description}</CardDescription>
                       </div>
-                      <Switch checked={item.enabled} onCheckedChange={() => {}} />
+                      <div className="flex items-center gap-2">
+                        <Power className={`h-4 w-4 ${item.enabled ? 'text-green-500' : 'text-gray-300'}`} />
+                        <Switch 
+                          checked={item.enabled} 
+                          onCheckedChange={() => toggleSetting(category.id, item.id)} 
+                        />
+                      </div>
                     </CardHeader>
                     <CardContent>
-                      <Button variant="outline" size="sm" className="mt-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="mt-2"
+                        disabled={!item.enabled}
+                      >
                         Configure
                       </Button>
                     </CardContent>

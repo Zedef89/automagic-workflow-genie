@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, Bell, User, Search, X } from 'lucide-react';
+import { Menu, User, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import NotificationsPopover from './NotificationsPopover';
 
 interface NavbarProps {
   toggleSidebar: () => void;
@@ -97,14 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
           <Search className="h-5 w-5 text-gray-600" />
         </Button>
         
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="relative hover:bg-gray-100"
-        >
-          <Bell className="h-5 w-5 text-gray-600" />
-          <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full"></span>
-        </Button>
+        <NotificationsPopover />
         
         <div className="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center">
           <User className="h-4 w-4 text-brand-700" />

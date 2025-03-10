@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { MessageSquare, User, Bot, PlusCircle, Settings, RefreshCw, SendHorizontal } from 'lucide-react';
+import React, { useState } from 'react';
+import { MessageSquare, User, Bot, PlusCircle, Settings, RefreshCw, SendHorizontal, Calendar, Filter, Bookmark, Star, CheckCircle2, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AnimatedRoute from '@/components/ui/AnimatedRoute';
@@ -8,8 +8,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import StatCard from '@/components/dashboard/StatCard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
 
 const CustomerSupport = () => {
+  const { toast } = useToast();
+  const [activeConversationId, setActiveConversationId] = useState(1);
+  const [currentTab, setCurrentTab] = useState('chat');
+  const [aiSettings, setAiSettings] = useState({
+    personality: 'friendly',
+    responseLength: 'balanced',
+    autoEscalation: true
+  });
+  const [newMessage, setNewMessage] = useState('');
+
   // Mock data
   const conversations = [
     {
@@ -65,6 +79,36 @@ const CustomerSupport = () => {
     }
   ];
 
+  const conversationHistory = [
+    {
+      id: 101,
+      customer: "Emma Wilson",
+      status: "resolved",
+      messages: 12,
+      startDate: "2023-06-12",
+      endDate: "2023-06-12",
+      topic: "Billing issue"
+    },
+    {
+      id: 102,
+      customer: "James Anderson",
+      status: "escalated",
+      messages: 8,
+      startDate: "2023-06-10",
+      endDate: "2023-06-11",
+      topic: "Product return"
+    },
+    {
+      id: 103,
+      customer: "Olivia Martinez",
+      status: "resolved",
+      messages: 5,
+      startDate: "2023-06-08",
+      endDate: "2023-06-08",
+      topic: "Account access"
+    }
+  ];
+
   const stats = [
     {
       title: 'Total Conversations',
@@ -86,6 +130,35 @@ const CustomerSupport = () => {
     }
   ];
 
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newMessage.trim()) return;
+    
+    // Demo: Would normally send to backend/API
+    toast({
+      title: "Message Sent",
+      description: "Your message has been sent.",
+    });
+    
+    setNewMessage('');
+  };
+
+  const handleConfigureAI = () => {
+    // This function would normally open a more detailed configuration modal
+    toast({
+      title: "AI Configured",
+      description: "AI settings have been updated successfully.",
+    });
+  };
+
+  const handleNewConversation = () => {
+    toast({
+      title: "New Conversation",
+      description: "A new conversation has been started.",
+    });
+  };
+
   return (
     <AnimatedRoute>
       <div className="p-6 md:p-8 max-w-7xl mx-auto">
@@ -95,11 +168,74 @@ const CustomerSupport = () => {
             <p className="text-gray-600 mt-1">Manage customer inquiries with AI-powered assistance</p>
           </div>
           <div className="mt-4 md:mt-0 flex gap-3">
-            <Button variant="outline">
-              <Settings className="h-4 w-4 mr-2" />
-              Configure AI
-            </Button>
-            <Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Configure AI
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <div className="space-y-4">
+                  <h3 className="font-medium">Quick AI Settings</h3>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium">AI Personality</label>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant={aiSettings.personality === 'professional' ? 'default' : 'outline'} 
+                          size="sm"
+                          onClick={() => setAiSettings({...aiSettings, personality: 'professional'})}
+                        >
+                          Pro
+                        </Button>
+                        <Button 
+                          variant={aiSettings.personality === 'friendly' ? 'default' : 'outline'} 
+                          size="sm"
+                          onClick={() => setAiSettings({...aiSettings, personality: 'friendly'})}
+                        >
+                          Friendly
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium">Response Length</label>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant={aiSettings.responseLength === 'concise' ? 'default' : 'outline'} 
+                          size="sm"
+                          onClick={() => setAiSettings({...aiSettings, responseLength: 'concise'})}
+                        >
+                          Short
+                        </Button>
+                        <Button 
+                          variant={aiSettings.responseLength === 'balanced' ? 'default' : 'outline'} 
+                          size="sm"
+                          onClick={() => setAiSettings({...aiSettings, responseLength: 'balanced'})}
+                        >
+                          Medium
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium">Auto-Escalation</label>
+                      <Switch 
+                        checked={aiSettings.autoEscalation} 
+                        onCheckedChange={(checked) => setAiSettings({...aiSettings, autoEscalation: checked})}
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button className="w-full" onClick={handleConfigureAI}>
+                    Save Settings
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+            <Button onClick={handleNewConversation}>
               <PlusCircle className="h-4 w-4 mr-2" />
               New Conversation
             </Button>
@@ -121,7 +257,7 @@ const CustomerSupport = () => {
           ))}
         </div>
 
-        <Tabs defaultValue="chat" className="mb-8">
+        <Tabs defaultValue="chat" className="mb-8" onValueChange={setCurrentTab}>
           <TabsList className="mb-6">
             <TabsTrigger value="chat">Live Chat</TabsTrigger>
             <TabsTrigger value="history">History</TabsTrigger>
@@ -149,7 +285,8 @@ const CustomerSupport = () => {
                     {conversations.map((conversation) => (
                       <div 
                         key={conversation.id} 
-                        className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${conversation.id === 1 ? 'bg-brand-50' : ''}`}
+                        className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${conversation.id === activeConversationId ? 'bg-brand-50' : ''}`}
+                        onClick={() => setActiveConversationId(conversation.id)}
                       >
                         <div className="flex items-start gap-3">
                           <Avatar>
@@ -178,11 +315,13 @@ const CustomerSupport = () => {
                 <CardHeader className="border-b border-gray-100 flex-shrink-0">
                   <div className="flex items-center gap-3">
                     <Avatar>
-                      <AvatarImage src="/placeholder.svg" alt="John Doe" />
-                      <AvatarFallback>JD</AvatarFallback>
+                      <AvatarImage src="/placeholder.svg" alt={conversations.find(c => c.id === activeConversationId)?.customer || "Customer"} />
+                      <AvatarFallback>
+                        {(conversations.find(c => c.id === activeConversationId)?.customer || "C").charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
-                      <CardTitle className="text-base">John Doe</CardTitle>
+                      <CardTitle className="text-base">{conversations.find(c => c.id === activeConversationId)?.customer || "Customer"}</CardTitle>
                       <CardDescription>Active now</CardDescription>
                     </div>
                   </div>
@@ -203,27 +342,82 @@ const CustomerSupport = () => {
                     ))}
                   </div>
                 </CardContent>
-                <div className="p-4 border-t border-gray-100 flex gap-2">
-                  <Input placeholder="Type your message..." className="flex-1" />
-                  <Button size="icon">
+                <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-100 flex gap-2">
+                  <Input 
+                    placeholder="Type your message..." 
+                    className="flex-1"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                  />
+                  <Button type="submit" size="icon">
                     <SendHorizontal className="h-4 w-4" />
                   </Button>
-                </div>
+                </form>
               </Card>
             </div>
           </TabsContent>
           
           <TabsContent value="history">
             <Card>
-              <CardHeader>
-                <CardTitle>Conversation History</CardTitle>
-                <CardDescription>
-                  View and search through past customer conversations
-                </CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Conversation History</CardTitle>
+                  <CardDescription>
+                    View and search through past customer conversations
+                  </CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Date Range
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <Filter className="h-4 w-4 mr-2" />
+                    Filter
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="h-80 w-full flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-200">
-                  <p className="text-gray-500">Conversation history will appear here</p>
+                <div className="rounded-md border">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50 text-gray-700">
+                        <tr>
+                          <th className="py-3 px-4 text-left font-medium">Customer</th>
+                          <th className="py-3 px-4 text-left font-medium">Topic</th>
+                          <th className="py-3 px-4 text-left font-medium">Status</th>
+                          <th className="py-3 px-4 text-left font-medium">Date</th>
+                          <th className="py-3 px-4 text-left font-medium">Messages</th>
+                          <th className="py-3 px-4 text-left font-medium">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y">
+                        {conversationHistory.map((conversation) => (
+                          <tr key={conversation.id} className="hover:bg-gray-50">
+                            <td className="py-3 px-4">{conversation.customer}</td>
+                            <td className="py-3 px-4">{conversation.topic}</td>
+                            <td className="py-3 px-4">
+                              <Badge variant={conversation.status === 'resolved' ? 'success' : 'warning'}>
+                                {conversation.status}
+                              </Badge>
+                            </td>
+                            <td className="py-3 px-4">{conversation.startDate}</td>
+                            <td className="py-3 px-4">{conversation.messages}</td>
+                            <td className="py-3 px-4">
+                              <div className="flex gap-2">
+                                <Button variant="ghost" size="sm">
+                                  <History className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="sm">
+                                  <Star className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -244,9 +438,27 @@ const CustomerSupport = () => {
                       <h3 className="text-sm font-medium mb-1">AI Personality</h3>
                       <p className="text-sm text-gray-600 mb-2">Set the tone and style of AI responses</p>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">Professional</Button>
-                        <Button size="sm">Friendly</Button>
-                        <Button variant="outline" size="sm">Casual</Button>
+                        <Button 
+                          variant={aiSettings.personality === 'professional' ? 'default' : 'outline'} 
+                          size="sm"
+                          onClick={() => setAiSettings({...aiSettings, personality: 'professional'})}
+                        >
+                          Professional
+                        </Button>
+                        <Button 
+                          variant={aiSettings.personality === 'friendly' ? 'default' : 'outline'} 
+                          size="sm"
+                          onClick={() => setAiSettings({...aiSettings, personality: 'friendly'})}
+                        >
+                          Friendly
+                        </Button>
+                        <Button 
+                          variant={aiSettings.personality === 'casual' ? 'default' : 'outline'} 
+                          size="sm"
+                          onClick={() => setAiSettings({...aiSettings, personality: 'casual'})}
+                        >
+                          Casual
+                        </Button>
                       </div>
                     </div>
                     
@@ -254,9 +466,27 @@ const CustomerSupport = () => {
                       <h3 className="text-sm font-medium mb-1">Response Length</h3>
                       <p className="text-sm text-gray-600 mb-2">Control how detailed AI responses should be</p>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">Concise</Button>
-                        <Button size="sm">Balanced</Button>
-                        <Button variant="outline" size="sm">Detailed</Button>
+                        <Button 
+                          variant={aiSettings.responseLength === 'concise' ? 'default' : 'outline'} 
+                          size="sm"
+                          onClick={() => setAiSettings({...aiSettings, responseLength: 'concise'})}
+                        >
+                          Concise
+                        </Button>
+                        <Button 
+                          variant={aiSettings.responseLength === 'balanced' ? 'default' : 'outline'} 
+                          size="sm"
+                          onClick={() => setAiSettings({...aiSettings, responseLength: 'balanced'})}
+                        >
+                          Balanced
+                        </Button>
+                        <Button 
+                          variant={aiSettings.responseLength === 'detailed' ? 'default' : 'outline'} 
+                          size="sm"
+                          onClick={() => setAiSettings({...aiSettings, responseLength: 'detailed'})}
+                        >
+                          Detailed
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -275,13 +505,28 @@ const CustomerSupport = () => {
                     <div>
                       <h3 className="text-sm font-medium mb-1">Auto-Escalation</h3>
                       <p className="text-sm text-gray-600 mb-2">Set conditions for automatic escalation to human agents</p>
-                      <Button>Configure Rules</Button>
+                      <div className="flex items-center justify-between py-2">
+                        <label className="text-sm">Enable auto-escalation</label>
+                        <Switch 
+                          checked={aiSettings.autoEscalation} 
+                          onCheckedChange={(checked) => setAiSettings({...aiSettings, autoEscalation: checked})}
+                        />
+                      </div>
+                      <Button onClick={handleConfigureAI}>Configure Rules</Button>
                     </div>
                     
                     <div className="pt-4 border-t border-gray-100">
                       <h3 className="text-sm font-medium mb-1">Human Support Hours</h3>
                       <p className="text-sm text-gray-600 mb-2">Define when human support agents are available</p>
-                      <Button variant="outline">Set Hours</Button>
+                      <div className="bg-gray-50 p-3 rounded-md text-sm mb-2">
+                        <p><span className="font-medium">Current hours:</span> Monday-Friday, 9:00 AM - 5:00 PM ET</p>
+                      </div>
+                      <Button variant="outline" onClick={() => {
+                        toast({
+                          title: "Hours Updated",
+                          description: "Support hours have been updated.",
+                        });
+                      }}>Set Hours</Button>
                     </div>
                   </div>
                 </CardContent>
@@ -296,5 +541,30 @@ const CustomerSupport = () => {
 
 // Fixed: Need to define Search component
 const Search = MessageSquare;
+
+// Add Badge component for success and warning variants
+const Badge = ({ children, variant, ...props }: { children: React.ReactNode, variant?: string, [key: string]: any }) => {
+  const getVariantClass = () => {
+    switch (variant) {
+      case 'success':
+        return 'bg-green-100 text-green-800';
+      case 'warning':
+        return 'bg-amber-100 text-amber-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  return (
+    <span 
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getVariantClass()}`}
+      {...props}
+    >
+      {variant === 'success' && <CheckCircle2 className="mr-1 h-3 w-3" />}
+      {variant === 'warning' && <AlertCircle className="mr-1 h-3 w-3" />}
+      {children}
+    </span>
+  );
+};
 
 export default CustomerSupport;

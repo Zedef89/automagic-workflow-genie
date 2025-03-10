@@ -72,7 +72,7 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
             <p className="text-gray-600 mt-1">Welcome back! Here's an overview of your automations.</p>
           </div>
-          <Button className="mt-4 md:mt-0 gap-2">
+          <Button className="mt-4 md:mt-0 gap-2" onClick={() => navigate('/new-automation')}>
             <PlusCircle className="h-4 w-4" />
             Create Automation
           </Button>
@@ -97,7 +97,7 @@ const Dashboard = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-xl font-semibold text-gray-900">Recent Automations</h2>
-            <Button variant="ghost" size="sm" className="text-brand-600 gap-1">
+            <Button variant="ghost" size="sm" className="text-brand-600 gap-1" onClick={() => navigate('/all-automations')}>
               View All
               <ArrowUpRight className="h-4 w-4" />
             </Button>
