@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -7,6 +6,7 @@ import {
   ChevronDown, Plus, Globe, StarIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import NewAutomationDialog from '../automation/NewAutomationDialog';
 
 interface SidebarProps {
@@ -78,7 +78,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
 
   return (
     <>
-      {/* Overlay for mobile */}
       {isOpen && (
         <div 
           className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
@@ -86,7 +85,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
         ></div>
       )}
       
-      {/* Sidebar */}
       <div 
         className={cn(
           "fixed left-0 top-0 bottom-0 w-64 bg-white z-50 transition-transform duration-300 ease-in-out transform md:translate-x-0 border-r border-gray-100 flex flex-col",
@@ -139,7 +137,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
             ))}
           </div>
 
-          {/* Automations Section */}
           <div className="mt-6">
             <button 
               className="w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50"
@@ -181,7 +178,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
             )}
           </div>
 
-          {/* Integrations Section */}
           <div className="mt-4">
             <button 
               className="w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50"
