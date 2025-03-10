@@ -10,6 +10,8 @@ import Dashboard from "./pages/Dashboard";
 import FacebookAds from "./pages/FacebookAds";
 import CustomerSupport from "./pages/CustomerSupport";
 import DataAnalysis from "./pages/DataAnalysis";
+import Settings from "./pages/Settings";
+import SearchResults from "./pages/SearchResults";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
@@ -44,6 +46,8 @@ const App = () => {
                   <Route path="/facebook-ads" element={<FacebookAds />} />
                   <Route path="/customer-support" element={<CustomerSupport />} />
                   <Route path="/data-analysis" element={<DataAnalysis />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/search" element={<SearchResults />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>

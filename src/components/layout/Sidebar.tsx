@@ -1,8 +1,13 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BarChart2, MessageSquare, Zap, Settings, ChevronRight, HelpCircle, LogOut } from 'lucide-react';
+import { 
+  LayoutDashboard, BarChart2, MessageSquare, Zap, 
+  Settings, ChevronRight, HelpCircle, LogOut, 
+  ChevronDown, Plus, Globe, StarIcon
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
+import NewAutomationDialog from '../automation/NewAutomationDialog';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -11,13 +16,18 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
   const location = useLocation();
+  const [automationsExpanded, setAutomationsExpanded] = useState(true);
+  const [integrationsExpanded, setIntegrationsExpanded] = useState(false);
   
-  const menuItems = [
+  const mainMenuItems = [
     { 
       name: 'Dashboard', 
       path: '/dashboard', 
       icon: LayoutDashboard 
     },
+  ];
+
+  const automationItems = [
     { 
       name: 'Facebook Ads', 
       path: '/facebook-ads', 
@@ -33,12 +43,38 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
       path: '/data-analysis', 
       icon: Zap 
     },
+  ];
+
+  const integrationItems = [
+    { 
+      name: 'API Connections', 
+      path: '/api-connections', 
+      icon: Globe 
+    },
+    { 
+      name: 'Templates', 
+      path: '/templates', 
+      icon: StarIcon 
+    },
+  ];
+
+  const bottomMenuItems = [
     { 
       name: 'Settings', 
       path: '/settings', 
       icon: Settings 
     },
+    { 
+      name: 'Help & Support', 
+      path: '/help', 
+      icon: HelpCircle 
+    },
   ];
+
+  const handleNewAutomation = (name: string, type: string) => {
+    console.log('Creating new automation:', name, type);
+    // Implement the logic to create a new automation
+  };
 
   return (
     <>
@@ -63,9 +99,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
           </Link>
         </div>
         
-        <div className="flex flex-col flex-grow px-3 py-6 overflow-y-auto">
-          <nav className="space-y-1">
-            {menuItems.map((item) => (
+        <div className="flex-grow overflow-y-auto px-3 py-4">
+          <div className="mb-6">
+            <NewAutomationDialog 
+              trigger={
+                <Button className="w-full flex items-center justify-center">
+                  <Plus className="h-4 w-4 mr-2" />
+                  <span>New Automation</span>
+                </Button>
+              }
+              onCreateAutomation={handleNewAutomation}
+            />
+          </div>
+
+          <div className="space-y-1">
+            {mainMenuItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -75,6 +123,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
                     ? "bg-brand-50 text-brand-700"
                     : "text-gray-700 hover:bg-gray-50"
                 )}
+                onClick={closeSidebar}
               >
                 <item.icon className={cn(
                   "mr-3 h-5 w-5 transition-colors",
@@ -88,18 +137,120 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
                 )}
               </Link>
             ))}
-          </nav>
-          
-          <div className="mt-auto space-y-1">
-            <Link to="/help" className="flex items-center px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
-              <HelpCircle className="mr-3 h-5 w-5 text-gray-500" />
-              <span>Help & Support</span>
-            </Link>
-            <button className="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
-              <LogOut className="mr-3 h-5 w-5 text-gray-500" />
-              <span>Log Out</span>
-            </button>
           </div>
+
+          {/* Automations Section */}
+          <div className="mt-6">
+            <button 
+              className="w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50"
+              onClick={() => setAutomationsExpanded(!automationsExpanded)}
+            >
+              <span className="font-semibold">Automations</span>
+              <ChevronDown 
+                className={cn(
+                  "h-4 w-4 text-gray-500 transition-transform", 
+                  automationsExpanded ? "transform rotate-180" : ""
+                )} 
+              />
+            </button>
+            
+            {automationsExpanded && (
+              <div className="mt-1 space-y-1 pl-2">
+                {automationItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      "flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                      location.pathname === item.path
+                        ? "bg-brand-50 text-brand-700"
+                        : "text-gray-700 hover:bg-gray-50"
+                    )}
+                    onClick={closeSidebar}
+                  >
+                    <item.icon className={cn(
+                      "mr-3 h-4 w-4 transition-colors",
+                      location.pathname === item.path
+                        ? "text-brand-600"
+                        : "text-gray-500 group-hover:text-gray-700"
+                    )} />
+                    <span>{item.name}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Integrations Section */}
+          <div className="mt-4">
+            <button 
+              className="w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50"
+              onClick={() => setIntegrationsExpanded(!integrationsExpanded)}
+            >
+              <span className="font-semibold">Integrations</span>
+              <ChevronDown 
+                className={cn(
+                  "h-4 w-4 text-gray-500 transition-transform", 
+                  integrationsExpanded ? "transform rotate-180" : ""
+                )} 
+              />
+            </button>
+            
+            {integrationsExpanded && (
+              <div className="mt-1 space-y-1 pl-2">
+                {integrationItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      "flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                      location.pathname === item.path
+                        ? "bg-brand-50 text-brand-700"
+                        : "text-gray-700 hover:bg-gray-50"
+                    )}
+                    onClick={closeSidebar}
+                  >
+                    <item.icon className={cn(
+                      "mr-3 h-4 w-4 transition-colors",
+                      location.pathname === item.path
+                        ? "text-brand-600"
+                        : "text-gray-500 group-hover:text-gray-700"
+                    )} />
+                    <span>{item.name}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="mt-auto border-t border-gray-100 px-3 py-4 space-y-1">
+          {bottomMenuItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={cn(
+                "flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                location.pathname === item.path
+                  ? "bg-brand-50 text-brand-700"
+                  : "text-gray-700 hover:bg-gray-50"
+              )}
+              onClick={closeSidebar}
+            >
+              <item.icon className={cn(
+                "mr-3 h-5 w-5 transition-colors",
+                location.pathname === item.path
+                  ? "text-brand-600"
+                  : "text-gray-500 group-hover:text-gray-700"
+              )} />
+              <span>{item.name}</span>
+            </Link>
+          ))}
+          
+          <button className="w-full flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
+            <LogOut className="mr-3 h-5 w-5 text-gray-500" />
+            <span>Log Out</span>
+          </button>
         </div>
       </div>
     </>
