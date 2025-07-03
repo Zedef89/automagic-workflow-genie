@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import ConnectButton from '@/components/dashboard/ConnectButton';
 import { useToast } from '@/hooks/use-toast';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 
 const ApiConnections = () => {
   const { toast } = useToast();
@@ -111,12 +112,53 @@ const ApiConnections = () => {
     });
   };
 
-  const handleRevokeKey = (keyId: number) => {
-    toast({
-      title: "API Key Revoked",
-      description: "The API key has been revoked successfully.",
-    });
+  const [isLoading, setIsLoading] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [selectedApiId, setSelectedApiId] = useState<number | null>(null);
+
+  const handleRevokeKey = async (keyId: number) => {
+    try {
+      setIsLoading(true);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: "API Key Revoked",
+        description: "The API key has been revoked successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Revocation Failed",
+        description: "Failed to revoke API key. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  // Add confirmation dialog for API key deletion
+  <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+        <AlertDialogDescription>
+          This action cannot be undone. This will permanently delete your API key.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction 
+          onClick={() => {
+            if (selectedApiId) handleRevokeKey(selectedApiId);
+            setShowDeleteDialog(false);
+          }}
+        >
+          Continue
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 
   const handleWebhookToggle = (webhookId: number, active: boolean) => {
     toast({

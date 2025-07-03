@@ -8,9 +8,14 @@ import { Input } from '@/components/ui/input';
 import AnimatedRoute from '@/components/ui/AnimatedRoute';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 
 const Templates = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const categories = [
@@ -116,15 +121,46 @@ const Templates = () => {
 
   const featuredTemplates = templates.filter(template => template.featured);
 
-  const handleDownload = (templateId: number) => {
-    const template = templates.find(t => t.id === templateId);
-    if (template) {
+  const handleDownload = async (templateId: number) => {
+    try {
+      setIsLoading(true);
+      setSelectedTemplate(templateId);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const template = templates.find(t => t.id === templateId);
+      if (template) {
+        toast({
+          title: "Template Downloaded",
+          description: `${template.name} has been added to your templates.`,
+        });
+        navigate('/my-templates'); // Navigate to my templates after successful download
+      }
+    } catch (error) {
       toast({
-        title: "Template Downloaded",
-        description: `${template.name} has been added to your templates.`,
+        title: "Download Failed",
+        description: "Failed to download template. Please try again.",
+        variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
+      setSelectedTemplate(null);
     }
   };
+
+  // Update the template card button to show loading state
+  <Button 
+    onClick={() => handleDownload(template.id)}
+    disabled={isLoading && selectedTemplate === template.id}
+  >
+    {isLoading && selectedTemplate === template.id ? (
+      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+    ) : (
+      <Download className="h-4 w-4 mr-2" />
+    )}
+    Download
+  </Button>
 
   const handleCreateTemplate = () => {
     toast({
