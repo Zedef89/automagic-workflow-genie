@@ -14,7 +14,7 @@ const RootLayout = () => {
       <Navbar toggleSidebar={toggleSidebar} />
       <div className="flex h-screen overflow-hidden">
         <Sidebar isOpen={sidebarOpen} closeSidebar={closeSidebar} />
-        <main className="flex-1 overflow-y-auto pt-16 px-4 md:px-6 lg:px-8">
+        <main className="flex-1 overflow-y-auto pt-16 px-4 md:px-6 lg:px-8 md:ml-64">
           <Outlet />
         </main>
       </div>
