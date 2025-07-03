@@ -127,15 +127,29 @@ const Templates = () => {
       setSelectedTemplate(templateId);
       
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       const template = templates.find(t => t.id === templateId);
       if (template) {
         toast({
-          title: "Template Downloaded",
-          description: `${template.name} has been added to your templates.`,
+          title: "Template Downloaded Successfully!",
+          description: `${template.name} has been added to your templates and is ready to use.`,
         });
-        navigate('/my-templates'); // Navigate to my templates after successful download
+        
+        // Navigate to the appropriate automation page based on template category
+        switch(template.category.toLowerCase()) {
+          case 'marketing':
+            navigate('/facebook-ads');
+            break;
+          case 'customer support':
+            navigate('/customer-support');
+            break;
+          case 'data analysis':
+            navigate('/data-analysis');
+            break;
+          default:
+            navigate('/automations');
+        }
       }
     } catch (error) {
       toast({
@@ -147,6 +161,21 @@ const Templates = () => {
       setIsLoading(false);
       setSelectedTemplate(null);
     }
+  };
+
+  const handleTemplateClick = (template: any) => {
+    toast({
+      title: "Template Preview",
+      description: `Viewing details for ${template.name}`,
+    });
+  };
+
+  const handleFavoriteToggle = (templateId: number) => {
+    const template = templates.find(t => t.id === templateId);
+    toast({
+      title: "Favorites Updated",
+      description: `${template?.name} ${Math.random() > 0.5 ? 'added to' : 'removed from'} favorites.`,
+    });
   };
 
   // Update the template card button to show loading state
@@ -164,8 +193,19 @@ const Templates = () => {
 
   const handleCreateTemplate = () => {
     toast({
-      title: "Create New Template",
-      description: "Starting template creation wizard...",
+      title: "Template Builder",
+      description: "Opening template creation wizard...",
+    });
+    // Simulate navigation to template builder
+    setTimeout(() => {
+      navigate('/automations');
+    }, 1000);
+  };
+
+  const handleCategoryFilter = (category: string) => {
+    toast({
+      title: "Filter Applied",
+      description: `Showing templates for: ${category}`,
     });
   };
 
@@ -214,6 +254,7 @@ const Templates = () => {
                   key={index} 
                   variant={index === 0 ? "default" : "outline"} 
                   size="sm"
+                  onClick={() => handleCategoryFilter(category)}
                 >
                   {category}
                 </Button>
@@ -247,7 +288,11 @@ const Templates = () => {
                               {template.description}
                             </CardDescription>
                           </div>
-                          <Button variant="ghost" size="icon">
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => handleFavoriteToggle(template.id)}
+                          >
                             <Star className="h-5 w-5 text-yellow-400" />
                           </Button>
                         </div>
@@ -270,14 +315,28 @@ const Templates = () => {
                         </div>
                       </CardContent>
                       <CardFooter className="pt-0">
-                        <Button 
-                          variant="default" 
-                          className="w-full"
-                          onClick={() => handleDownload(template.id)}
-                        >
-                          <Download className="h-4 w-4 mr-2" />
-                          Use Template
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="outline" 
+                            className="flex-1"
+                            onClick={() => handleTemplateClick(template)}
+                          >
+                            Preview
+                          </Button>
+                          <Button 
+                            variant="default" 
+                            className="flex-1"
+                            onClick={() => handleDownload(template.id)}
+                            disabled={isLoading && selectedTemplate === template.id}
+                          >
+                            {isLoading && selectedTemplate === template.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            ) : (
+                              <Download className="h-4 w-4 mr-2" />
+                            )}
+                            Use Template
+                          </Button>
+                        </div>
                       </CardFooter>
                     </Card>
                   ))}
@@ -299,8 +358,13 @@ const Templates = () => {
                   </div>
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
-                      <CardTitle className="text-lg">{template.name}</CardTitle>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <CardTitle className="text-lg cursor-pointer hover:text-brand-600" onClick={() => handleTemplateClick(template)}>{template.name}</CardTitle>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-8 w-8"
+                        onClick={() => handleFavoriteToggle(template.id)}
+                      >
                         <Star className="h-4 w-4" />
                       </Button>
                     </div>
@@ -318,14 +382,28 @@ const Templates = () => {
                     </div>
                   </CardContent>
                   <CardFooter className="pt-0">
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => handleDownload(template.id)}
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      Use Template
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => handleTemplateClick(template)}
+                      >
+                        Preview
+                      </Button>
+                      <Button 
+                        variant="default" 
+                        className="flex-1"
+                        onClick={() => handleDownload(template.id)}
+                        disabled={isLoading && selectedTemplate === template.id}
+                      >
+                        {isLoading && selectedTemplate === template.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        ) : (
+                          <Download className="h-4 w-4 mr-2" />
+                        )}
+                        Use
+                      </Button>
+                    </div>
                   </CardFooter>
                 </Card>
               ))}
@@ -364,15 +442,30 @@ const Templates = () => {
                     </div>
                   </CardContent>
                   <CardFooter className="pt-0 flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => toast({ title: "Template Shared", description: `${template.name} sharing link copied to clipboard.` })}
+                    >
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => toast({ title: "Template Duplicated", description: `${template.name} has been duplicated.` })}
+                    >
                       <Copy className="h-4 w-4 mr-2" />
                       Duplicate
                     </Button>
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="default" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => handleDownload(template.id)}
+                    >
                       <PlusCircle className="h-4 w-4 mr-2" />
                       Use
                     </Button>
@@ -401,7 +494,16 @@ const Templates = () => {
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-1">No Favorite Templates Yet</h3>
               <p className="text-gray-500 mb-4">Save templates you like by clicking the star icon</p>
-              <Button variant="outline" onClick={() => document.querySelector('[data-value="explore"]')?.click()}>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  toast({ title: "Navigating", description: "Switching to template browser..." });
+                  setTimeout(() => {
+                    const exploreTab = document.querySelector('[data-value="explore"]') as HTMLElement;
+                    exploreTab?.click();
+                  }, 500);
+                }}
+              >
                 Browse Templates
               </Button>
             </div>

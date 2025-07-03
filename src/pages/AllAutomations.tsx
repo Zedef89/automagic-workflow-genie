@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { BarChart2, Zap, MessageSquare, Filter, Plus, ArrowUpRight, Check, Clock, AlertCircle } from 'lucide-react';
+import { BarChart2, Zap, MessageSquare, Filter, Plus, ArrowUpRight, Check, Clock, AlertCircle, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -225,7 +225,6 @@ const AllAutomations = () => {
   );
 };
 
-// Need to define Search component
-const Search = BarChart2;
+
 
 export default AllAutomations;

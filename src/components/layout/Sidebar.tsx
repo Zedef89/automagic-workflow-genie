@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, BarChart2, MessageSquare, Zap, 
   Settings, ChevronRight, HelpCircle, LogOut, 
-  ChevronDown, Plus, Globe, StarIcon
+  ChevronDown, Plus, Globe, StarIcon, List
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import NewAutomationDialog from '../automation/NewAutomationDialog';
@@ -28,6 +29,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
   ];
 
   const automationItems = [
+    { 
+      name: 'All Automations', 
+      path: '/automations', 
+      icon: List 
+    },
     { 
       name: 'Facebook Ads', 
       path: '/facebook-ads', 
@@ -71,9 +77,34 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
     },
   ];
 
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const handleNewAutomation = (name: string, type: string) => {
     console.log('Creating new automation:', name, type);
-    // Implement the logic to create a new automation
+    
+    // Show success toast
+    toast({
+      title: "Automation Created!",
+      description: `${name} (${type}) has been created successfully.`,
+    });
+    
+    // Navigate to the appropriate page based on type
+    switch(type) {
+      case 'facebook-ads':
+        navigate('/facebook-ads');
+        break;
+      case 'ai-customer-support':
+        navigate('/customer-support');
+        break;
+      case 'data-analysis':
+        navigate('/data-analysis');
+        break;
+      default:
+        navigate('/automations');
+    }
+    
+    closeSidebar();
   };
 
   return (
